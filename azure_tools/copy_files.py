@@ -10,6 +10,7 @@ from click import option
 from .functions import file_checksum
 from .functions import list_container_files
 from .functions import list_fileshare_files
+from .functions import save_chunks
 
 
 @group("cp")
@@ -41,9 +42,7 @@ def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, dire
         file_client = fileshare_client.get_file_client(str(file_path))
         file_stream = file_client.download_file()
 
-        with dest_file_path.open("wb") as fh:
-            for chunk in file_stream.chunks():
-                fh.write(chunk)
+        save_chunks(file_stream.chunks(), dest_file_path)
 
 
 @app_copy_files.command("blob")
@@ -78,6 +77,4 @@ def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, name
         blob_client = container_client.get_blob_client(blob.name)
         blob_stream = blob_client.download_blob()
 
-        with dest_file_path.open("wb") as fh:
-            for chunk in blob_stream.chunks():
-                fh.write(chunk)
+        save_chunks(blob_stream.chunks(), dest_file_path)

@@ -1,6 +1,7 @@
 from hashlib import md5
 from pathlib import Path
 from typing import Generator
+from typing import Iterator
 from typing import Optional
 
 from azure.storage.blob import BlobProperties
@@ -36,3 +37,16 @@ def list_container_files(
     client: ContainerClient, name_starts_with: Optional[str]
 ) -> Generator[BlobProperties, None, None]:
     yield from client.list_blobs(name_starts_with=name_starts_with)
+
+
+def save_chunks(chunks: Iterator[bytes], path: Path, *, temp_suffix: str = ".tmp"):
+    path_tmp: Path = path.with_suffix(path.suffix + temp_suffix)
+
+    try:
+        with path_tmp.open("wb") as fh:
+            for chunk in chunks:
+                fh.write(chunk)
+
+        path_tmp.replace(path)
+    finally:
+        path_tmp.unlink(missing_ok=True)
