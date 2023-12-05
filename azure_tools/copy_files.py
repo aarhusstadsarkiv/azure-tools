@@ -26,7 +26,7 @@ def app_copy_files():
 @option("-u", "--update", is_flag=True, default=False)
 def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, directory_name: str, update: bool):
     fileshare_client = ShareClient.from_connection_string(connection_string, name)
-    dest = dest / fileshare_client.account_name / fileshare_client.share_name
+
     for path, file in list_fileshare_files(fileshare_client, directory_name):
         file_path = Path(path, file.name)
         print(file_path)
@@ -40,7 +40,7 @@ def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, dire
             dest_file_path.parent.mkdir(parents=True, exist_ok=True)
 
         file_client = fileshare_client.get_file_client(str(file_path))
-        file_stream = file_client.download_file()
+        file_stream = file_client.download_file(max_concurrency=4)
 
         save_chunks(file_stream.chunks(), dest_file_path)
 
@@ -54,7 +54,6 @@ def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, dire
 def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, name_starts_with: str, update: bool):
     container_client = ContainerClient.from_connection_string(connection_string, name)
 
-    dest = dest / container_client.account_name / container_client.container_name
     for blob in list_container_files(container_client, name_starts_with):
         print(blob.name)
 
@@ -75,6 +74,6 @@ def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, name
             dest_file_path.parent.mkdir(parents=True, exist_ok=True)
 
         blob_client = container_client.get_blob_client(blob.name)
-        blob_stream = blob_client.download_blob()
+        blob_stream = blob_client.download_blob(max_concurrency=4)
 
         save_chunks(blob_stream.chunks(), dest_file_path)
