@@ -4,7 +4,7 @@ from .copy_files import app_copy_files
 from .list_files import app_list_files
 
 
-@group("azure-tools")
+@group("azure-tools", no_args_is_help=True)
 def app():
     pass
 

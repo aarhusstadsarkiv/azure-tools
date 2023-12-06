@@ -88,12 +88,12 @@ def list_files(files: Generator[tuple[str, Optional[bytearray]], None, None], ch
             print(filename)
 
 
-@group("ls")
+@group("ls", no_args_is_help=True)
 def app_list_files():
     pass
 
 
-@app_list_files.command("fileshare")
+@app_list_files.command("fileshare", no_args_is_help=True)
 @argument("connection_string")
 @argument("name", metavar="SHARE_NAME")
 @option("--directory-name", type=str, default=None)
@@ -118,7 +118,7 @@ def app_list_files_fileshare(
     list_files(files, check_folder)
 
 
-@app_list_files.command("blob")
+@app_list_files.command("blob", no_args_is_help=True)
 @argument("connection_string")
 @argument("name", metavar="CONTAINER_NAME")
 @option("--name-starts-with", type=str, default=None)

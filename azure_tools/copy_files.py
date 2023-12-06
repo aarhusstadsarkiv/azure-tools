@@ -13,12 +13,12 @@ from .functions import list_fileshare_files
 from .functions import save_chunks
 
 
-@group("cp")
+@group("cp", no_args_is_help=True)
 def app_copy_files():
     pass
 
 
-@app_copy_files.command("fileshare")
+@app_copy_files.command("fileshare", no_args_is_help=True)
 @argument("connection_string")
 @argument("name", metavar="SHARE_NAME")
 @argument("dest", type=PathClick(file_okay=False, resolve_path=True, path_type=Path))
@@ -45,7 +45,7 @@ def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, dire
         save_chunks(file_stream.chunks(), dest_file_path)
 
 
-@app_copy_files.command("blob")
+@app_copy_files.command("blob", no_args_is_help=True)
 @argument("connection_string")
 @argument("name", metavar="CONTAINER_NAME")
 @argument("dest", type=PathClick(file_okay=False, resolve_path=True, path_type=Path))
