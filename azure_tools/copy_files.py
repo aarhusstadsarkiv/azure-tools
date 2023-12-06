@@ -51,7 +51,7 @@ def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, dire
 @argument("dest", type=PathClick(file_okay=False, resolve_path=True, path_type=Path))
 @option("--name-starts-with", type=str, default=None)
 @option("-u", "--update", is_flag=True, default=False)
-def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, name_starts_with: str, update: bool):
+def app_copy_files_blob(connection_string: str, name: str, dest: Path, name_starts_with: str, update: bool):
     container_client = ContainerClient.from_connection_string(connection_string, name)
 
     for blob in list_container_files(container_client, name_starts_with):
