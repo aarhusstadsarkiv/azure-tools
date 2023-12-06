@@ -31,8 +31,6 @@ def list_fileshare_files(
                 client, f"{f'{directory_name}/' if directory_name else ''}{item.name}", output_dir
             )
         else:
-            print(item)
-            input()
             filename: str = f"{f'/{directory_name}' if directory_name else ''}/{item.name}"
             with output_files.open("a", encoding="utf-8") as fh:
                 fh.write(filename + "\n")
