@@ -22,13 +22,15 @@ def file_checksum(path: Path) -> bytes:
 
 
 def list_fileshare_files(
-    client: ShareClient, directory_name: Optional[str]
+    client: ShareClient, directory_name: Optional[str], file_name: Optional[str]
 ) -> Generator[tuple[str, FileProperties], None, None]:
     item: DirectoryProperties | FileProperties
 
     for item in client.list_directories_and_files(directory_name=directory_name, include_extended_info=True):
         if item.is_directory:
-            yield from list_fileshare_files(client, str(Path(directory_name or "", item.name)))
+            yield from list_fileshare_files(client, str(Path(directory_name or "", item.name)), file_name)
+        elif file_name and item.name.lower() != file_name.lower():
+            continue
         else:
             yield directory_name or "", item
 

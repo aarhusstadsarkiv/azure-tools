@@ -27,7 +27,7 @@ def app_copy_files():
 def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, directory_name: str, update: bool):
     fileshare_client = ShareClient.from_connection_string(connection_string, name)
 
-    for path, file in list_fileshare_files(fileshare_client, directory_name):
+    for path, file in list_fileshare_files(fileshare_client, directory_name, None):
         file_path = Path(path, file.name)
         print(file_path)
 
