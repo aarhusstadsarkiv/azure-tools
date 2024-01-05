@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 from azure.storage.blob import ContainerClient
 from azure.storage.fileshare import ShareClient
@@ -23,11 +24,19 @@ def app_copy_files():
 @argument("name", metavar="SHARE_NAME")
 @argument("dest", type=PathClick(file_okay=False, resolve_path=True, path_type=Path))
 @option("--directory-name", type=str, default=None)
+@option("--file-name", type=str, default=None)
 @option("-u", "--update", is_flag=True, default=False)
-def app_copy_files_fileshare(connection_string: str, name: str, dest: Path, directory_name: str, update: bool):
+def app_copy_files_fileshare(
+    connection_string: str,
+    name: str,
+    dest: Path,
+    directory_name: Optional[str],
+    file_name: Optional[str],
+    update: bool,
+):
     fileshare_client = ShareClient.from_connection_string(connection_string, name)
 
-    for path, file in list_fileshare_files(fileshare_client, directory_name):
+    for path, file in list_fileshare_files(fileshare_client, directory_name, file_name):
         file_path = Path(path, file.name)
         print(file_path)
 
