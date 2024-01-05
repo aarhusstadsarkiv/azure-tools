@@ -24,16 +24,17 @@ def app_copy_files():
 @argument("name", metavar="SHARE_NAME")
 @argument("dest", type=PathClick(file_okay=False, resolve_path=True, path_type=Path))
 @option("--directory-name", type=str, default=None)
-@option("--file-name", type=str, default=None)
+@option("--file-name", type=str, default=None, multiple=True)
 @option("-u", "--update", is_flag=True, default=False)
 def app_copy_files_fileshare(
     connection_string: str,
     name: str,
     dest: Path,
     directory_name: Optional[str],
-    file_name: Optional[str],
+    file_name: tuple[str, ...],
     update: bool,
 ):
+    file_name = tuple(Path(f).name.lower() for f in file_name)
     fileshare_client = ShareClient.from_connection_string(connection_string, name)
 
     for path, file in list_fileshare_files(fileshare_client, directory_name, file_name):
