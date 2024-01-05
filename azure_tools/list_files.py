@@ -25,16 +25,16 @@ def list_fileshare_files(
 
     item: DirectoryProperties | FileProperties
 
-    for item in client.list_directories_and_files(directory_name=directory_name, include_extended_info=True):
-        if item.is_directory:
-            yield from list_fileshare_files(
-                client, f"{f'{directory_name}/' if directory_name else ''}{item.name}", output_dir
-            )
-        else:
-            filename: str = f"{f'/{directory_name}' if directory_name else ''}/{item.name}"
-            with output_files.open("a", encoding="utf-8") as fh:
+    with output_files.open("w", encoding="utf-8") as fh:
+        for item in client.list_directories_and_files(directory_name=directory_name, include_extended_info=True):
+            if item.is_directory:
+                yield from list_fileshare_files(
+                    client, f"{f'{directory_name}/' if directory_name else ''}{item.name}", output_dir
+                )
+            else:
+                filename: str = f"{f'/{directory_name}' if directory_name else ''}/{item.name}"
                 fh.write(filename + "\n")
-            yield filename, None
+                yield filename, None
 
 
 def list_container_files(
@@ -67,7 +67,7 @@ def list_files(files: Generator[tuple[str, Optional[bytearray]], None, None], ch
     for i, [filename, checksum] in enumerate(files, 1):
         print(i, filename)
         if check_folder:
-            file_path = check_folder.joinpath(filename)
+            file_path = check_folder.joinpath(filename.lstrip("/\\"))
             if not file_path.is_file():
                 print(f"missing {filename}", file=stderr)
                 missing_files.append(filename)
